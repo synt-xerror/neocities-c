@@ -36,7 +36,7 @@ pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-curl mingw-w64-x86_64-jansson ma
 ### Android (Termux)
 
 ```bash
-pkg install clang curl-dev jansson make
+pkg install clang curl libjansson make
 ```
 
 ## Building
