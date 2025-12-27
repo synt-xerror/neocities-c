@@ -1,8 +1,15 @@
+#include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <curl/curl.h>
+#include <jansson.h>
+
 int fetch_neocities_info() {
     const char *user = getenv("NEOCITIES_USER");
     const char *pass = getenv("NEOCITIES_PASS");
+    const char *enc  = getenv("NEOCITIES_PASS_ENC");
     if (!user || !pass) {
-        fprintf(stderr, "Variáveis NEOCITIES_USER ou NEOCITIES_PASS não definidas!\n");
+        fprintf(stderr, "You're not logged!\n");
         return 1;
     }
 

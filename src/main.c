@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <curl/curl.h>
-#include <jansson.h>
 
 #include "main.h"
 #include "info.h"
@@ -28,13 +27,31 @@ size_t write_callback(void *data, size_t size, size_t nmemb, void *userdata) {
     return chunk_size;
 }
 
-int main(int argc, char *argv[]) {
-    printf("\nNeocities C CLI\n");
+typedef int (*cmd_func_t)(void);
 
-    if (argc < 2 || strcmp(argv[1], "--info") != 0) {
-        printf("\nnothing to do.\n");
+typedef struct {
+    const char *name;
+    cmd_func_t func;
+} command_entry;
+
+int main(int argc, char *argv[]) {
+    command_entry commands[] = {
+        {"--info", fetch_neocities_info},
+        {"--upload", upload_func}
+    };
+
+    if (argc < 2) {
+        printf("No command provided.\n");
         return 0;
     }
 
-    return fetch_neocities_info();
+    for (size_t i = 0; i < sizeof(commands)/sizeof(commands[0]); i++) {
+        if (strcmp(argv[1], commands[i].name) == 0) {
+            return commands[i].func();
+        }
+    }
+
+    printf("Unknown command.\n");
+    return 0;
 }
+
