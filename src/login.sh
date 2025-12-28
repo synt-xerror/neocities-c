@@ -1,16 +1,27 @@
 #!/bin/bash
+set -e
 
-BASHRC="$HOME/.bashrc"
+CONFIG_DIR="$HOME/.config/neocities"
+CONFIG_FILE="$CONFIG_DIR/credentials"
 
-read -p "Username: " NEOCITIES_USER
-read -p "Password: " NEOCITIES_PASS
+mkdir -p "$CONFIG_DIR"
+chmod 700 "$CONFIG_DIR"
 
-# Remove linhas existentes se houver
-sed -i '/^NEOCITIES_USER=/d' "$BASHRC"
-sed -i '/^NEOCITIES_PASS=/d' "$BASHRC"
+read -p "Username: " USER
+read -s -p "Password: " PASS
+echo
 
-# Adiciona no final
-echo "NEOCITIES_USER=\"$NEOCITIES_USER\"" >> "$BASHRC"
-echo "NEOCITIES_PASS=\"$NEOCITIES_PASS\"" >> "$BASHRC"
+read -p "Would you like to see the credentials on your screen to confirm? [Y/n]: " CHOICE
+case $CHOICE in
+    y|Y) echo -e "Username: $USER\nPassword: $PASS" ;;
+    *) echo "" ;;
+esac
 
-echo "Successfully logged in. Saved on $HOME/.bashrc"
+cat > "$CONFIG_FILE" <<EOF
+user = $USER
+pass = $PASS
+EOF
+
+chmod 600 "$CONFIG_FILE"
+
+echo "Credentials saved in $CONFIG_FILE"

@@ -12,7 +12,10 @@ CFLAGS ?= -Wall -O2 -Iinclude
 LIBS ?= -lcurl -ljansson
 
 # Source and target
-SRC = src/main.c
+SRC = \
+    src/main.c \
+    src/info.c    
+
 BIN = neocities
 
 # Detect Windows (MSYS2 / MinGW)
