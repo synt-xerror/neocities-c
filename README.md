@@ -1,7 +1,10 @@
 # Neocities C CLI
 
 A simple command-line tool written in C that interacts with the [Neocities API](https://neocities.org/api).  
+status: [sprint/rotative](https://github.com/synt-xerror/synt-xerror)
+
 Currently, only the `--info` command is implemented — it fetches and displays basic information about your Neocities site.
+
 
 ---
 
