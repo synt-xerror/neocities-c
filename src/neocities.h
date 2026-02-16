@@ -25,10 +25,9 @@ typedef struct {
 // API functions
 // -------------------------
 int neocities_info(const char *sitename, neocities_info_t *out);
-int neocities_list(const char *user, const char *pass, const char *path, neocities_filelist_t *out);
-int neocities_upload(const char *user, const char *pass, const char **local_files, const char **remote_names, size_t count, char **response);
-int neocities_delete(const char *user, const char *pass, const char **filenames, size_t count, char **response);
-int neocities_get_api_key(const char *user, const char *pass, char **api_key);
+int neocities_list(const char *api_key, const char *path, neocities_filelist_t *out);
+int neocities_delete(const char *api_key, const char **filenames, size_t count, char **response);
+int neocities_upload(const char *api_key, const char **local_files, const char **remote_names, size_t count, char **response);
 
 // -------------------------
 // Free functions
