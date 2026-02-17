@@ -151,19 +151,38 @@ int neocities_info(
     	const char *result = json_string_value(json_object_get(root,"result"));
     	if (!result || strcmp(result,"success")!=0) { json_decref(root); return 4; }
 
-    	json_t *info = json_object_get(root,"info");
-    	out->sitename    = strdup(json_string_value(json_object_get(info,"sitename")));
-    	out->hits        = (int)json_integer_value(json_object_get(info,"hits"));
-    	out->created_at  = strdup(json_string_value(json_object_get(info,"created_at")));
-    	out->last_updated= strdup(json_string_value(json_object_get(info,"last_updated")));
-    	out->domain      = strdup(json_string_value(json_object_get(info,"domain")));
-
+	json_t *info = json_object_get(root,"info");
+	if (!json_is_object(info)) {
+	    json_decref(root);
+	    return 4;
+	}
+		
+	json_t *j_sitename = json_object_get(info,"sitename");
+	json_t *j_created  = json_object_get(info,"created_at");
+	json_t *j_updated  = json_object_get(info,"last_updated");
+	json_t *j_domain   = json_object_get(info,"domain");
+	json_t *j_hits     = json_object_get(info,"hits");
+	
+	out->sitename     = json_is_string(j_sitename) ? strdup(json_string_value(j_sitename)) : NULL;
+	out->created_at   = json_is_string(j_created)  ? strdup(json_string_value(j_created))  : NULL;
+	out->last_updated = json_is_string(j_updated)  ? strdup(json_string_value(j_updated))  : NULL;
+	out->domain       = json_is_string(j_domain)   ? strdup(json_string_value(j_domain))   : NULL;
+	out->hits         = json_is_integer(j_hits)    ? json_integer_value(j_hits) : 0;
+	
     	json_t *tags = json_object_get(info,"tags");
-    	size_t tc = json_array_size(tags);
-    	out->tags = malloc(sizeof(char*) * tc);
-    	out->tag_count = tc;
-    	for (size_t i=0; i<tc; i++)
-    	    out->tags[i] = strdup(json_string_value(json_array_get(tags,i)));
+	if (!json_is_array(tags)) {
+	    out->tags = NULL;
+	    out->tag_count = 0;
+	} else {
+	    size_t tc = json_array_size(tags);
+	    out->tags = malloc(sizeof(char*) * tc);
+	    out->tag_count = tc;
+	
+	    for (size_t i=0; i<tc; i++) {
+	        json_t *tag = json_array_get(tags,i);
+	        out->tags[i] = json_is_string(tag) ? strdup(json_string_value(tag)) : NULL;
+	    }
+	}
 
     	json_decref(root);
     	return 0;
