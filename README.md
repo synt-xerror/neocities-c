@@ -51,12 +51,10 @@ If you're coding a CLI or application, you must provide the key at runtime (env 
 
 ## API Overview
 
-Just an overview. For more detailed information, see: [[Function-Guide.md]]
-
 ### Info (public)
 
 ```c
-int neocities_info(const char *sitename, neocities_info_t *out);
+int neocities_info(const char *sitename, char **out);
 ```
 
 Fetch metadata about a site.
@@ -66,9 +64,7 @@ Fetch metadata about a site.
 ### List files
 
 ```c
-int neocities_list(const char *api_key,
-                   const char *path,
-                   neocities_filelist_t *out);
+int neocities_list(const char *api_key, const char *path, char** out);
 ```
 
 List files at a path.
@@ -78,11 +74,7 @@ List files at a path.
 ### Upload
 
 ```c
-int neocities_upload(const char *api_key,
-                     const char **local_files,
-                     const char **remote_names,
-                     size_t count,
-                     char **response);
+int neocities_upload(const char *api_key, const char **local_files, const char **remote_names, size_t count, char **response);
 ```
 
 Uploads multiple files.
@@ -95,10 +87,7 @@ Uploads multiple files.
 ### Delete
 
 ```c
-int neocities_delete(const char *api_key,
-                     const char **filenames,
-                     size_t count,
-                     char **response);
+int neocities_delete(const char *api_key, const char **filenames, size_t count, char **response);
 ```
 
 Deletes files from the site.
@@ -111,46 +100,9 @@ For security reasons, you should get the API key via Neocities settings. This fu
 
 ---
 
-## Memory Management
-
-Always free parsed outputs:
-
-```c
-void neocities_free_info(neocities_info_t *info);
-void neocities_free_filelist(neocities_filelist_t *list);
-```
-
-`response` returned by upload/delete must also be freed by caller.
-
----
-
 ## Example Usage
 
-### List files
-
-```c
-neocities_filelist_t list;
-
-if (neocities_list(api_key, "/", &list) == 0) {
-    for (size_t i = 0; i < list.count; i++)
-        printf("%s\n", list.paths[i]);
-
-    neocities_free_filelist(&list);
-}
-```
-
----
-
-### Upload
-
-```c
-const char *local[]  = {"index.html"};
-const char *remote[] = {"index.html"};
-char *resp;
-
-neocities_upload(api_key, local, remote, 1, &resp);
-free(resp);
-```
+See [[example.c]]
 
 ---
 
@@ -173,17 +125,6 @@ Recommended:
 * API key only
 * Explicit memory ownership
 * Minimal abstraction
-
----
-
-## Future Extensions (Optional)
-
-Possible areas to explore:
-
-* Structured responses for upload/delete
-* JSON passthrough mode
-* Streaming uploads
-* Error codes standardization
 
 ---
 
