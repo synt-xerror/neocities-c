@@ -102,7 +102,7 @@ For security reasons, you should get the API key via Neocities settings. This fu
 
 ## Example Usage
 
-See [[example.c]]
+See [example.c]
 
 ---
 
