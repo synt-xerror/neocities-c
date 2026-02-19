@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 int main() {
-	static const char* username = "errorsyntax";
-	static const char* api_key = "859d457a6c9271b18c40a8540b314276";
+	static const char* username = "YOUR_USER_NAME";
+	static const char* api_key = "YOUR_API_KEY";
 	
 	char* out = NULL;
 
