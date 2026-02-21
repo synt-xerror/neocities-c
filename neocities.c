@@ -235,3 +235,33 @@ int neocities_upload(
     	*response = resp.data;
     	return 0;
 }
+
+// -------------------------
+// key — GET /api/key
+// -------------------------
+
+int neocities_apikey(
+	const char *user,
+	const char *pass,
+	char **out
+
+)
+{	
+	CURL *curl;
+	CURLcode resp;
+
+	char buf[128];
+	snprintf(buf, sizeof(buf), "%s:%s", user, pass);
+	
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_cb);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp);
+	
+	CURLcode rc = curl_easy_perform(curl);
+	if(rc == CURLE_OK) {
+		*out = resp.data;	
+	} else {
+		return 1;
+	}
+
+	return 0;	
+}
