@@ -3,10 +3,14 @@
 #include <stdlib.h>
 
 int main() {
-	static const char* username = "YOUR_USER_NAME";
+	static const char* username = "YOUR_USERNAME";
 	static const char* api_key = "YOUR_API_KEY";
 	
 	char* out = NULL;
+
+	// GET /api/key
+	if (neocities_apikey(username, "YOUR_PASSWORD", &out) == 0) printf("%s", out);
+	free(out);
 
 	// GET /api/info
 	if (neocities_info(username, &out) == 0) printf("%s", out);

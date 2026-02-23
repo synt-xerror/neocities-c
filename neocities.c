@@ -239,29 +239,35 @@ int neocities_upload(
 // -------------------------
 // key — GET /api/key
 // -------------------------
+int neocities_apikey(const char *user, const char *pass, char **out) {
+    struct response resp = {0};
 
-int neocities_apikey(
-	const char *user,
-	const char *pass,
-	char **out
+    char userpass[256];
+    snprintf(userpass, sizeof(userpass), "%s:%s", user, pass);
 
-)
-{	
-	CURL *curl;
-	CURLcode resp;
+    CURL *curl = curl_easy_init();
+    if (!curl) return 1;
 
-	char buf[128];
-	snprintf(buf, sizeof(buf), "%s:%s", user, pass);
-	
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_cb);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp);
-	
-	CURLcode rc = curl_easy_perform(curl);
-	if(rc == CURLE_OK) {
-		*out = resp.data;	
-	} else {
-		return 1;
-	}
+    resp.data = malloc(1);
+    resp.len = 0;
+    resp.data[0] = '\0';
 
-	return 0;	
+    curl_easy_setopt(curl, CURLOPT_URL, "https://neocities.org/api/key");
+    curl_easy_setopt(curl, CURLOPT_USERPWD, userpass); // aqui é equivalente ao -u do curl
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_cb);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp);
+
+    CURLcode res = curl_easy_perform(curl);
+    long http_code = 0;
+    curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+
+    curl_easy_cleanup(curl);
+
+    if (res != CURLE_OK || http_code >= 400) {
+        free(resp.data);
+        return 2;
+    }
+
+    *out = resp.data; // resposta da API
+    return 0;
 }
